@@ -34,7 +34,7 @@ function content() {
     ctn.style.height = "500px";
     ctn.style.borderRadius = "5px";
 
-    kata.textContent = "Cuma mau ucapin, semangat ya kerjanya. Jangan malas-malasan 😊";
+    kata.textContent = "Cuma mau ucapin, semangat ye kerjanya. Jangan malas-malasan 😊";
 
 }
 
