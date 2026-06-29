@@ -1,88 +1,66 @@
-const img = document.querySelector(".content .kado");
-const kata = document.querySelector(".content .kata");
-const button = document.querySelectorAll(".content button");
-const ctn = document.querySelector(".content");
+const quotes = [
+  { q: "harus semangat terus jangan males-males pokoknya! 💪", sub: "✦jangan suka ngeyel✦" },
+];
 
-function clik(pilihan) {
+let lastIdx = -1;
 
-    // Sembunyikan tombol
-    button.forEach(btn => {
-        btn.style.display = "none";
-    });
+function showQuote(e) {
+  let idx;
+  do { idx = Math.floor(Math.random() * quotes.length); } while (idx === lastIdx);
+  lastIdx = idx;
 
-    // Ubah ukuran kotak
-    ctn.style.height = "400px";
-    ctn.style.width = "500px";
+  const card = document.getElementById('quoteCard');
+  card.classList.remove('show');
+  void card.offsetWidth; // trigger reflow untuk restart animasi
+  document.getElementById('quoteText').textContent = quotes[idx].q;
+  document.getElementById('quoteSub').textContent = quotes[idx].sub;
+  card.classList.add('show');
 
-    if (pilihan === "iya") {
-
-        img.src = "img/malu.gif";
-        kata.textContent = "Ni buat si tukang ngeyel 🤭";
-
-    } else {
-
-        img.src = "img/patahHati.gif";
-        kata.textContent = "Parah sih, bilang enggak 😔";
-
-    }
-
+  spawnHearts(e.clientX, e.clientY);
 }
 
-function content() {
-
-    ctn.style.width = "400px";
-    ctn.style.height = "500px";
-    ctn.style.borderRadius = "5px";
-
-    kata.textContent = "Cuma mau ucapin, semangat ye kerjanya. Jangan malas-malasan 😊";
-
+function triggerUpload() {
+  document.getElementById('gifInput').click();
 }
 
-function pesanHilang() {
-
-    const divpesan = document.querySelector(".pesan");
-
-    divpesan.style.display = "none";
-
-    content();
-
-    fullLayar();
-
-    musik();
-
+function loadGif(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    const img = document.getElementById('gifPreview');
+    img.src = ev.target.result;
+    img.style.display = 'block';
+    document.getElementById('gifPlaceholder').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
 }
 
-function fullLayar() {
-
-    const elem = document.documentElement;
-
-    if (elem.requestFullscreen) {
-        elem.requestFullscreen();
-    } else if (elem.webkitRequestFullscreen) {
-        elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) {
-        elem.msRequestFullscreen();
-    }
-
+function spawnHearts(x, y) {
+  const emojis = ['💖', '✨', '🌸', '💕', '⭐', '🌺', '🦋'];
+  for (let i = 0; i < 8; i++) {
+    const el = document.createElement('div');
+    el.className = 'burst';
+    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    el.style.left = (x + (Math.random() - 0.5) * 100) + 'px';
+    el.style.top  = (y + (Math.random() - 0.5) * 80)  + 'px';
+    el.style.animationDelay = (Math.random() * 0.25) + 's';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1100);
+  }
 }
 
-setTimeout(() => {
+// Floating petals
+const petalBox   = document.getElementById('petals');
+const petalEmojis = ['🌸', '✿', '🌺', '💮', '🌷'];
 
-    const span = document.querySelector(".pesan span");
-
-    span.style.opacity = ".2";
-
-}, 1000);
-
-function musik() {
-
-    const msk = document.getElementById("lagu");
-
-    if (msk) {
-        msk.play();
-        msk.loop = true;
-    }
-
+for (let i = 0; i < 12; i++) {
+  const p = document.createElement('div');
+  p.className   = 'petal';
+  p.textContent = petalEmojis[Math.floor(Math.random() * petalEmojis.length)];
+  p.style.left            = Math.random() * 100 + 'vw';
+  p.style.animationDuration = (7 + Math.random() * 8) + 's';
+  p.style.animationDelay    = -(Math.random() * 10) + 's';
+  p.style.fontSize          = (0.8 + Math.random() * 0.8) + 'rem';
+  petalBox.appendChild(p);
 }
-
-setInterval(musik, 147000);
